@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import RestaurantMap from './RestaurantMap';
 import RestaurantList from './RestaurantList';
+import NavigateButton from '../NavigateButton';
 import ReactMapGL from 'react-map-gl';
 import Search from './Search';
 import Sort from './Sort';
@@ -99,7 +100,7 @@ function RestaurantApp() {
   return (
     <div className="container">
       <div className="row justify-content-center">
-        <div className="display-2">Restaurant App</div>
+        <div className="display-3">Restaurant App</div>
       </div>
       <div className="row justify-content-center">
         <Search searchType="distance" position={position} distance={1000} setRestaurants={setRestaurants} setIsLoaded={setIsLoaded} setViewport={setViewport} GOOGLE_API_KEY={GOOGLE_API_KEY} />
@@ -146,6 +147,9 @@ function RestaurantApp() {
             </div>
           </div>
         </div>
+      </div>
+      <div className="row justify-content-center mb-4">
+            <NavigateButton buttonName="Back To Home" url="/"></NavigateButton>
       </div>
 
     </div>

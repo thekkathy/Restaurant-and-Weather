@@ -1,4 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react';
+import NavigateButton from '../../NavigateButton';
 import API_KEY from '../keys';
 import WeatherCard from './WeatherCard'
 import WeatherList from './WeatherList'
@@ -145,6 +146,9 @@ function WeatherApp() {
           </div>
         </div>
       </main>
+      <div className="row justify-content-center mb-4">
+            <NavigateButton buttonName="Back To Home" url="/"></NavigateButton>
+      </div>
     </div>
   );
 }
