@@ -4,7 +4,7 @@ import RestaurantList from './RestaurantList';
 import ReactMapGL from 'react-map-gl';
 import Search from './Search';
 import Sort from './Sort';
-import {PositionContext} from '../../context/positionContext';
+import { PositionContext } from '../../context/positionContext';
 import _ from 'lodash';
 
 const GOOGLE_API_KEY = process.env.REACT_APP_google_api_key;
@@ -12,7 +12,7 @@ const MAPBOX_API_KEY = process.env.REACT_APP_mapbox_api_key;
 
 function RestaurantApp() {
   // const [position, setPosition] = useState({ lat: 38.0293, lon: -78.5055744 });
-  const {position, setPosition} = useContext(PositionContext);
+  const { position, setPosition } = useContext(PositionContext);
   const [restaurants, setRestaurants] = useState({});
   const [isLoaded, setIsLoaded] = useState(false);
   const [viewport, setViewport] = useState({
@@ -45,32 +45,30 @@ function RestaurantApp() {
       })
   }, [position]);
 
-  const sortPrice = () => {
-    let sortedArr = _.sortBy(restaurants, 'price_level');
-    setRestaurants(sortedArr);
-  }
-
-  const sortName = () => {
-    let sortedArr = _.sortBy(restaurants, 'name');
-    setRestaurants(sortedArr);
-  }
-
-  const sortRating = () => {
-    let sortedArr = _.sortBy(restaurants, 'rating');
-    setRestaurants(sortedArr);
-  }
-
-  const sortRestaurants = () => {
-    console.log("restuarants: ", restaurants.results);
-    // if (sort === "Name") {
-    //   sortName(restaurants);
-    // }
-    // else if (sort === "Price") {
-    //   sortPrice(restaurants);
-    // }
-    // else {
-    //   sortRating(restaurants);
-    // }
+  const sortRestaurants = (sortBy) => {
+    const url = new URL("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+    url.searchParams.append("key", GOOGLE_API_KEY);
+    url.searchParams.append("location", position.lat + "," + position.lon);
+    url.searchParams.append("radius", 1000);
+    url.searchParams.append("type", 'restaurant');
+    url.searchParams.append("opennow", true);
+    fetch(url)
+      .then((resp) => {
+        return resp.json();
+      })
+      .then((obj) => {
+        if (sortBy === "Name") {
+          obj.results = _.sortBy(obj.results, 'name');
+        }
+        else if (sortBy === "Price") {
+          obj.results = _.sortBy(obj.results, 'price_level');
+        }
+        else {
+          obj.results = _.sortBy(obj.results, 'rating');
+        }
+        setRestaurants(obj);
+        setIsLoaded(true);
+      })
   }
 
 
@@ -87,7 +85,6 @@ function RestaurantApp() {
       return <div>Loading...</div>;
     }
     else {
-      sortRestaurants();
       return (
         <Fragment>
           <RestaurantMap response={restaurants} setSelected={setSelected} />
@@ -104,8 +101,8 @@ function RestaurantApp() {
         <div className="display-3">Restaurant App</div>
       </div>
       <div className="row justify-content-center">
-        <Search searchType="distance" position={position} distance={1000} setRestaurants={setRestaurants} setIsLoaded={setIsLoaded} setViewport={setViewport}  setPosition={setPosition} GOOGLE_API_KEY={GOOGLE_API_KEY} />
-        <Search searchType="address" position={position} distance={1000} setRestaurants={setRestaurants} setIsLoaded={setIsLoaded} setViewport={setViewport}  setPosition={setPosition} GOOGLE_API_KEY={GOOGLE_API_KEY} />
+        <Search searchType="distance" position={position} distance={1000} setRestaurants={setRestaurants} setIsLoaded={setIsLoaded} setViewport={setViewport} setPosition={setPosition} GOOGLE_API_KEY={GOOGLE_API_KEY} />
+        <Search searchType="address" position={position} distance={1000} setRestaurants={setRestaurants} setIsLoaded={setIsLoaded} setViewport={setViewport} setPosition={setPosition} GOOGLE_API_KEY={GOOGLE_API_KEY} />
       </div>
       <div className="row justify-content-center">
         <div className="row mb-4">
@@ -122,8 +119,7 @@ function RestaurantApp() {
           <div className="col-9"><RestaurantList response={restaurants} setSelected={setSelected} sortBy={sort} position={position} GOOGLE_API_KEY={GOOGLE_API_KEY} /></div>
           <div className="col">
             <div className="row">
-              <Sort selectType="Sort Restaurants" options={sortOptions} setFunct={setSelectedSort} />
-              {sort}
+
 
               <div className="ml-4">
                 <div className="row">
@@ -131,19 +127,25 @@ function RestaurantApp() {
                     <div className="card-header">
                       Sort By
                     </div>
-                    <div className="btn-group" role="group" aria-label="Basic example">
-                      {sortOptions.map(option => {
-                        return <button type="button" className="btn btn-secondary" key={option} onClick={(e) => {
-                          e.preventDefault();
-                          setSort(option);
-                        }}>
-                          {option}
-                        </button>
-                      })}
+                    <div class="dropdown">
+                      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {sort ? sort : 'Select a Sort'}
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        {sortOptions.map(option => {
+                          return <a class="dropdown-item" onClick={(e) => {
+                            e.preventDefault();
+                            setSort(option);
+                          }}>{option}</a>
+                        })}
+
+                      </div>
                     </div>
+                    <button type="submit" className="btn btn-info" onClick={() => {sortRestaurants(sort)}}>Submit</button>
                   </div>
                 </div>
               </div>
+
 
             </div>
           </div>
@@ -153,5 +155,8 @@ function RestaurantApp() {
     </div>
   );
 }
+
+// <Sort selectType="Sort Restaurants" options={sortOptions} setFunct={setSelectedSort} />
+//               {sort}
 
 export default RestaurantApp;

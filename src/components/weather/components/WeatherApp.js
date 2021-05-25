@@ -131,8 +131,8 @@ function WeatherApp() {
               <div className="heading h3">View hourly forecast for the next two days or daily forecast for the next week at your current location.</div>
             </div>
             <div className="btn-group-lg mt-4" role="group" aria-label="Basic example">
-              <button type="button" className="btn btn-primary mx-4" onClick={() => setFreq("hourly")}>Hourly</button>
-              <button type="button" className="btn btn-primary mx-4" onClick={() => setFreq("daily")}>Daily</button>
+              <button type="button" className="btn btn-info mx-4" onClick={() => setFreq("hourly")}>Hourly</button>
+              <button type="button" className="btn btn-info mx-4" onClick={() => setFreq("daily")}>Daily</button>
             </div>
           </div>
           <div className="row justify-content-center p-4">

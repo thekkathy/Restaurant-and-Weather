@@ -49,7 +49,7 @@ const RestaurantList = ({ response, setSelected, sortBy, position, GOOGLE_API_KE
                                             target="_blank"
                                             rel="noopener noreferrer"
                                         >
-                                            <span style={{fontSize: "2em", color:"gray"}}>
+                                            <span className="text-info" style={{fontSize: "2em"}}>
                                                 <i class="fas fa-directions"></i>
                                             </span>
                                         </a>
