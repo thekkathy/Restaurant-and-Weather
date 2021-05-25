@@ -26,7 +26,7 @@ const RestaurantMap = ({ response, setSelected }) => {
                                         );
                                     }
                                 }>
-                                    ◉
+                                    <i class="fas fa-map-marker-alt"></i>
                                 </button>
                             </Marker>
                         })
