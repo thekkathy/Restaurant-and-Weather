@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Geocode from "react-geocode";
 
-const Search = ({ searchType, position, distance, setRestaurants, setIsLoaded, setViewport, GOOGLE_API_KEY }) => {
+const Search = ({ searchType, position, distance, setRestaurants, setIsLoaded, setViewport, setPosition, GOOGLE_API_KEY }) => {
     const [dist, setDist] = useState(1000);
     const [address, setAddress] = useState("Charlottesville");
     const [coords, setCoords] = useState({ lat: 38.0293, lon: -78.5055744 });
@@ -52,7 +52,7 @@ const Search = ({ searchType, position, distance, setRestaurants, setIsLoaded, s
             Geocode.fromAddress(address).then(
                 (response) => {
                     const { lat, lng } = response.results[0].geometry.location;
-                    setCoords({ "lat": lat, "lon": lng });
+                    setPosition({ "lat": lat, "lon": lng });
                 },
                 (error) => {
                     console.error(error);
@@ -62,7 +62,7 @@ const Search = ({ searchType, position, distance, setRestaurants, setIsLoaded, s
 
             const url = new URL("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
             url.searchParams.append("key", GOOGLE_API_KEY);
-            url.searchParams.append("location", coords.lat + "," + coords.lon);
+            url.searchParams.append("location", position.lat + "," + position.lon);
             url.searchParams.append("radius", distance);
             url.searchParams.append("type", 'restaurant');
             url.searchParams.append("opennow", true);
@@ -76,8 +76,8 @@ const Search = ({ searchType, position, distance, setRestaurants, setIsLoaded, s
                     setViewport({
                         width: '75vw',
                         height: '75vh',
-                        latitude: coords.lat,
-                        longitude: coords.lon,
+                        latitude: position.lat,
+                        longitude: position.lon,
                         zoom: 14
                     });
                 })

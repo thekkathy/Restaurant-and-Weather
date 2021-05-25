@@ -1,22 +1,23 @@
-import React, { Fragment, useEffect, useState } from 'react';
-import NavigateButton from '../../NavigateButton';
+import React, { Fragment, useContext, useEffect, useState } from 'react';
 import API_KEY from '../keys';
 import WeatherCard from './WeatherCard'
 import WeatherList from './WeatherList'
+import {PositionContext} from '../../../context/positionContext';
 
 function WeatherApp() {
   const [weather, setWeather] = useState({});
   const [zip, setZip] = useState(10001);
-  const [city, setCity] = useState("New York");
+  const [city, setCity] = useState("Charlottesville");
   const [freq, setFreq] = useState("hourly");
-  const [position, setPosition] = useState({ lat: 0, lon: 0 });
+  // const [position, setPosition] = useState({ lat: 0, lon: 0 });
+  const {position, setPosition} = useContext(PositionContext);
   const [hourly, setHourly] = useState([]);
   const [daily, setDaily] = useState([]);
 
   useEffect(() => {
-    window.navigator.geolocation.getCurrentPosition(
-      position => setPosition({ lat: position.coords.latitude, lon: position.coords.longitude })
-    );
+    // window.navigator.geolocation.getCurrentPosition(
+    //   position => setPosition({ lat: position.coords.latitude, lon: position.coords.longitude })
+    // );
     const url = new URL("https://api.openweathermap.org/data/2.5/onecall");
     url.searchParams.append("appid", API_KEY);
     url.searchParams.append("lat", position.lat);
@@ -34,10 +35,7 @@ function WeatherApp() {
         console.log(obj.hourly);
         console.log(obj.daily);
       })
-    return () => {
-      setPosition({});
-    }
-  }, [])
+  }, [position])
 
   const getCurrentWeatherWithZip = async (e) => {
     if (e.key === 'Enter') {
@@ -51,6 +49,7 @@ function WeatherApp() {
         })
         .then((obj) => {
           setWeather(obj);
+          setPosition({"lat": obj.coord.lat, "lon": obj.coord.lon});
         })
     }
   }
@@ -71,6 +70,7 @@ function WeatherApp() {
         })
         .then((obj) => {
           setWeather(obj);
+          setPosition({"lat": obj.coord.lat, "lon": obj.coord.lon});
         })
     }
   }
@@ -146,9 +146,6 @@ function WeatherApp() {
           </div>
         </div>
       </main>
-      <div className="row justify-content-center mb-4">
-            <NavigateButton buttonName="Back To Home" url="/"></NavigateButton>
-      </div>
     </div>
   );
 }

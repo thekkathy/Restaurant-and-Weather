@@ -1,17 +1,18 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState, useContext } from 'react';
 import RestaurantMap from './RestaurantMap';
 import RestaurantList from './RestaurantList';
-import NavigateButton from '../NavigateButton';
 import ReactMapGL from 'react-map-gl';
 import Search from './Search';
 import Sort from './Sort';
+import {PositionContext} from '../../context/positionContext';
 import _ from 'lodash';
 
 const GOOGLE_API_KEY = process.env.REACT_APP_google_api_key;
 const MAPBOX_API_KEY = process.env.REACT_APP_mapbox_api_key;
 
 function RestaurantApp() {
-  const [position, setPosition] = useState({ lat: 38.0293, lon: -78.5055744 });
+  // const [position, setPosition] = useState({ lat: 38.0293, lon: -78.5055744 });
+  const {position, setPosition} = useContext(PositionContext);
   const [restaurants, setRestaurants] = useState({});
   const [isLoaded, setIsLoaded] = useState(false);
   const [viewport, setViewport] = useState({
@@ -25,9 +26,9 @@ function RestaurantApp() {
   const [sort, setSort] = useState("Name");
 
   useEffect(() => {
-    window.navigator.geolocation.getCurrentPosition(
-      position => setPosition({ lat: position.coords.latitude, lon: position.coords.longitude })
-    );
+    // window.navigator.geolocation.getCurrentPosition(
+    //   position => setPosition({ lat: position.coords.latitude, lon: position.coords.longitude })
+    // );
     const url = new URL("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
     url.searchParams.append("key", GOOGLE_API_KEY);
     url.searchParams.append("location", position.lat + "," + position.lon);
@@ -42,7 +43,7 @@ function RestaurantApp() {
         setRestaurants(obj);
         setIsLoaded(true);
       })
-  }, []);
+  }, [position]);
 
   const sortPrice = () => {
     let sortedArr = _.sortBy(restaurants, 'price_level');
@@ -103,8 +104,8 @@ function RestaurantApp() {
         <div className="display-3">Restaurant App</div>
       </div>
       <div className="row justify-content-center">
-        <Search searchType="distance" position={position} distance={1000} setRestaurants={setRestaurants} setIsLoaded={setIsLoaded} setViewport={setViewport} GOOGLE_API_KEY={GOOGLE_API_KEY} />
-        <Search searchType="address" position={position} distance={1000} setRestaurants={setRestaurants} setIsLoaded={setIsLoaded} setViewport={setViewport} GOOGLE_API_KEY={GOOGLE_API_KEY} />
+        <Search searchType="distance" position={position} distance={1000} setRestaurants={setRestaurants} setIsLoaded={setIsLoaded} setViewport={setViewport}  setPosition={setPosition} GOOGLE_API_KEY={GOOGLE_API_KEY} />
+        <Search searchType="address" position={position} distance={1000} setRestaurants={setRestaurants} setIsLoaded={setIsLoaded} setViewport={setViewport}  setPosition={setPosition} GOOGLE_API_KEY={GOOGLE_API_KEY} />
       </div>
       <div className="row justify-content-center">
         <div className="row mb-4">
@@ -147,9 +148,6 @@ function RestaurantApp() {
             </div>
           </div>
         </div>
-      </div>
-      <div className="row justify-content-center mb-4">
-            <NavigateButton buttonName="Back To Home" url="/"></NavigateButton>
       </div>
 
     </div>
