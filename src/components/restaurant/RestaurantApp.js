@@ -3,7 +3,6 @@ import RestaurantMap from './RestaurantMap';
 import RestaurantList from './RestaurantList';
 import ReactMapGL from 'react-map-gl';
 import Search from './Search';
-import Sort from './Sort';
 import { PositionContext } from '../../context/positionContext';
 import _ from 'lodash';
 
@@ -61,10 +60,10 @@ function RestaurantApp() {
           obj.results = _.sortBy(obj.results, 'name');
         }
         else if (sortBy === "Price") {
-          obj.results = _.sortBy(obj.results, 'price_level');
+          obj.results = _.orderBy(obj.results, ['price_level'], ['asc']);
         }
         else {
-          obj.results = _.sortBy(obj.results, 'rating');
+          obj.results = _.orderBy(obj.results, ['rating'], ['desc']);
         }
         setRestaurants(obj);
         setIsLoaded(true);
@@ -76,9 +75,6 @@ function RestaurantApp() {
     setSelectedLocation(selected);
   }
 
-  const setSelectedSort = (sortType) => {
-    setSort(sortType);
-  }
 
   const render = () => {
     if (!isLoaded) {
@@ -96,7 +92,7 @@ function RestaurantApp() {
   const sortOptions = ["Price", "Rating", "Name"];
 
   return (
-    <div className="container">
+    <div className="container justify-content-center">
       <div className="row justify-content-center">
         <div className="display-3">Restaurant App</div>
       </div>
@@ -116,32 +112,38 @@ function RestaurantApp() {
           </ReactMapGL>
         </div>
         <div className="row w-100 justify-content-center m-4">
-          <div className="col-9"><RestaurantList response={restaurants} setSelected={setSelected} sortBy={sort} position={position} GOOGLE_API_KEY={GOOGLE_API_KEY} /></div>
-          <div className="col">
-            <div className="row">
+          <div className="col-9 justify-content-center"><RestaurantList response={restaurants} setSelected={setSelected} sortBy={sort} position={position} GOOGLE_API_KEY={GOOGLE_API_KEY} /></div>
+          <div className="col justify-content-center">
+            <div className="row justify-content-center">
 
-
-              <div className="ml-4">
-                <div className="row">
-                  <div className="card">
+              <div className="ml-4 w-100">
+                <div className="row w-100">
+                  <div className="card w-100">
                     <div className="card-header">
                       Sort By
                     </div>
-                    <div class="dropdown">
-                      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {sort ? sort : 'Select a Sort'}
-                      </button>
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        {sortOptions.map(option => {
-                          return <a class="dropdown-item" onClick={(e) => {
-                            e.preventDefault();
-                            setSort(option);
-                          }}>{option}</a>
-                        })}
+                    <div className="justify-content-center p-2">
+                      <div class="dropdown mx-2 mt-2 mb-1 w-100">
+                        <button class="dropdown-toggle w-75" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          {sort ? sort : 'Select a Sort'}
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                          {sortOptions.map(option => {
+                            return <a class="dropdown-item" onClick={(e) => {
+                              e.preventDefault();
+                              setSort(option);
+                            }}>{option}</a>
+                          })}
 
+                        </div>
                       </div>
+                      <button
+                        type="submit"
+                        className="btn btn-info mx-2 mb-2 mt-1"
+                        onClick={() => { sortRestaurants(sort) }}>
+                        Submit
+                    </button>
                     </div>
-                    <button type="submit" className="btn btn-info" onClick={() => {sortRestaurants(sort)}}>Submit</button>
                   </div>
                 </div>
               </div>

@@ -4,7 +4,7 @@ import WeatherListItem from './WeatherListItem'
 const WeatherList = ({ predictions, listType }) => {
 
     return (
-        <div className="w-100 m-4">
+        <div className="content w-100 m-4">
             {(typeof predictions != "undefined") && <ul className="list-group">
                 {predictions.map((prediction) => {
                     return (

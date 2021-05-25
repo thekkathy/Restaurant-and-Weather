@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import _ from 'lodash';
 import './CSS/RestaurantList.css'
 import './CSS/RestaurantMap.css';
+import '../../styles/content.css';
 
 const RestaurantList = ({ response, setSelected, sortBy, position, GOOGLE_API_KEY }) => {
     const [restaurants, setRestaurants] = useState([]);
@@ -11,7 +12,7 @@ const RestaurantList = ({ response, setSelected, sortBy, position, GOOGLE_API_KE
     }
 
     return (
-        <div className="card w-100" style={{ width: "18rem" }}>
+        <div className="card w-100 content" style={{ width: "18rem" }}>
             <h2 className="card-header text-center">List of Restaurants</h2>
             <ul className="list-group list-group-flush no-bullets d-flex">
                 {(typeof response.results != "undefined") ?
@@ -40,7 +41,7 @@ const RestaurantList = ({ response, setSelected, sortBy, position, GOOGLE_API_KE
                                                 }
                                             }>
                                             <div>{restuarant.name}</div>
-                                            <div>Price: {restuarant.price_level}, Rating: {restuarant.rating}</div>
+                                            <div>Price: {restuarant.price_level ? restuarant.price_level : "N/A"}, Rating: {restuarant.rating}</div>
                                         </button>
                                     </div>
                                     <div className="col my-auto">

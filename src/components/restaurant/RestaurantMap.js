@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react'
 import { Marker } from 'react-map-gl';
 import './CSS/RestaurantMap.css';
+import '../../styles/content.css';
 
 const RestaurantMap = ({ response, setSelected }) => {
 
